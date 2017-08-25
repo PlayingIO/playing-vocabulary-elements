@@ -1,0 +1,66 @@
+<!--
+`playing-vocabulary-edit-layout`
+@group Playing UI
+@element playing-vocabulary-edit-layout
+-->
+<dom-module id="playing-vocabulary-edit-layout">
+  <template>
+
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.id')]]"
+            name="id"
+            value="{{entry.properties.id::change}}"
+            required
+            readonly$="[[!new]]"></nuxeo-input>
+
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.label')]]"
+            name="label"
+            value="{{entry.properties.label::change}}"></nuxeo-input>
+
+    <div role="widget">
+      <label>[[i18n('vocabularyManagement.edit.obsolete')]]</label>
+      <paper-toggle-button
+              checked$="[[_isObsolete(entry.properties.obsolete)]]"
+              on-change="_obsoleteChanged" noink></paper-toggle-button>
+    </div>
+
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.ordering')]]"
+            name="ordering"
+            type="number"
+            value="{{entry.properties.ordering::change}}"></nuxeo-input>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'playing-vocabulary-edit-layout',
+      behaviors: [Mostly.I18nBehavior],
+      properties: {
+
+        entry: {
+          type: Object,
+          observer: '_entryChanged'
+        },
+
+        new: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      _entryChanged: function() {
+        this.entry.properties.obsolete = this.entry.properties.obsolete ? 1 : 0;
+      },
+
+      _isObsolete: function(obsolete) {
+        return obsolete === 1;
+      },
+
+      _obsoleteChanged: function() {
+        this.entry.properties.obsolete = this.entry.properties.obsolete > 0 ? 0 : 1;
+      }
+
+    });
+  </script>
+</dom-module>

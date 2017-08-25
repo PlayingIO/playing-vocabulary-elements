@@ -1,0 +1,166 @@
+<!--
+`playing-l10nxvocabulary-edit-layout`
+@group Playing UI
+@element playing-c-edit-layout
+-->
+<dom-module id="playing-l10nxvocabulary-edit-layout">
+  <template>
+
+    <div role="widget">
+      <label>[[i18n('vocabularyManagement.edit.parent')]]</label>
+      <paper-button id="selectParent" on-tap="_toggleParent">[[_parentLabel]]</paper-button>
+      <paper-dialog id="parentDialog" modal no-auto-focus>
+        <h2>[[i18n('vocabularyManagement.selectParent')]]</h2>
+        <form id="form" is="iron-form">
+          <mostly-tree id="tree" data="[[_root]]" controller="[[controller]]" node-key="id" on-select="_selectParent">
+            <template>
+              <div name$="[[item.properties.id]]">
+                <template is="dom-if" if="[[!isLeaf]]">
+                  <iron-icon icon="[[_expandIcon(opened)]]" toggle></iron-icon>
+                </template>
+                <span class="flex node-name" select>
+                <a class="parent">[[item.properties.id]]</a>
+              </span>
+              </div>
+            </template>
+          </mostly-tree>
+        </form>
+        <div class="buttons">
+          <paper-button name="close" dialog-dismiss>[[i18n('command.close')]]</paper-button>
+        </div>
+      </paper-dialog>
+    </div>
+
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.id')]]"
+            name="id"
+            value="{{entry.properties.id::change}}"
+            readonly$="[[!new]]"
+            required></nuxeo-input>
+
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.label_en')]]"
+            name="label"
+            value="{{entry.properties.label_en::change}}"></nuxeo-input>
+
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.label_fr')]]"
+            name="label"
+            value="{{entry.properties.label_fr::change}}"></nuxeo-input>
+
+    <div role="widget">
+      <label>[[i18n('vocabularyManagement.edit.obsolete')]]</label>
+      <paper-toggle-button
+              checked$="[[_isObsolete(entry.properties.obsolete)]]"
+              on-change="_obsoleteChanged" noink></paper-toggle-button>
+    </div>
+
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.ordering')]]"
+            name="ordering"
+            type="number"
+            value="{{entry.properties.ordering::change}}"></nuxeo-input>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'playing-l10nxvocabulary-edit-layout',
+      behaviors: [Mostly.I18nBehavior],
+      properties: {
+        entry: {
+          type: Object,
+          observer: '_entryChanged'
+        },
+
+        new: {
+          type: Boolean,
+          value: false
+        },
+
+        entries: {
+          type: Array
+        },
+
+        _parentLabel: {
+          type: String
+        },
+
+        controller: Object,
+
+        _root: {
+          type: Object,
+          value: {properties: {id: '', parent: ''}, root: true, id: 'root'}
+        }
+      },
+
+      observers: ['_inputChanged(entry, entries)'],
+
+      _entryChanged: function() {
+        this.entry.properties.obsolete = this.entry.properties.obsolete ? 1 : 0;
+      },
+
+      _isObsolete: function(obsolete) {
+        return obsolete === 1;
+      },
+
+      _obsoleteChanged: function() {
+        this.entry.properties.obsolete = this.entry.properties.obsolete > 0 ? 0 : 1;
+      },
+
+      _inputChanged: function() {
+        if (this.entry) {
+          if (this.entry.properties.parent && this.entry.properties.parent.length > 0) {
+            this._parentLabel = this.entry.properties.parent;
+          } else {
+            this._parentLabel = this.i18n('vocabularyManagement.edit.selectParent');
+          }
+          if (this.entries) {
+            this.controller = {
+              getChildren: function(node) {
+                return new Promise(function(resolve) {
+                  var targetParentId = !node ? '' : node.properties.id;
+                  var children = this.entries.filter(
+                    function(e) {
+                      if (e.properties.parent === targetParentId && e.properties.id !== this.entry.properties.id) {
+                        e.id = e.properties.id;
+                        return true;
+                      }
+                    }.bind(this)
+                  );
+                  resolve(children);
+                }.bind(this));
+              }.bind(this),
+
+              isLeaf: function(node) {
+                var lookedUpId = node.properties.id;
+                var isNotLeaf = this.entries.some(
+                  function(e) {
+                    return e.properties.parent === lookedUpId;
+                  }
+                );
+                return !isNotLeaf && node.root !== true;
+              }.bind(this)
+            };
+            this.$.tree.open.apply(this.$.tree, ['root']);
+          }
+        }
+      },
+
+      _expandIcon: function(opened) {
+        return 'hardware:keyboard-arrow-' + (opened ? 'down' : 'right');
+      },
+
+      _selectParent: function(e) {
+        this.entry.properties.parent = e.detail.item.properties.id;
+        this._parentLabel = this.entry.properties.parent;
+        this._toggleParent();
+      },
+
+      _toggleParent: function() {
+        this.$.parentDialog.toggle();
+      }
+
+    });
+  </script>
+</dom-module>
