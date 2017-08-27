@@ -9,19 +9,19 @@
     <nuxeo-input role="widget"
             label="[[i18n('vocabularyManagement.edit.id')]]"
             name="id"
-            value="{{entry.properties.id::change}}"
+            value="{{entry.id::change}}"
             required
             readonly$="[[!new]]"></nuxeo-input>
 
     <nuxeo-input role="widget"
             label="[[i18n('vocabularyManagement.edit.label')]]"
             name="label"
-            value="{{entry.properties.label::change}}"></nuxeo-input>
+            value="{{entry.label::change}}"></nuxeo-input>
 
     <div role="widget">
       <label>[[i18n('vocabularyManagement.edit.obsolete')]]</label>
       <paper-toggle-button
-              checked$="[[_isObsolete(entry.properties.obsolete)]]"
+              checked$="[[_isObsolete(entry.obsolete)]]"
               on-change="_obsoleteChanged" noink></paper-toggle-button>
     </div>
 
@@ -29,7 +29,7 @@
             label="[[i18n('vocabularyManagement.edit.ordering')]]"
             name="ordering"
             type="number"
-            value="{{entry.properties.ordering::change}}"></nuxeo-input>
+            value="{{entry.ordering::change}}"></nuxeo-input>
   </template>
 
   <script>
@@ -50,7 +50,7 @@
       },
 
       _entryChanged: function() {
-        this.entry.properties.obsolete = this.entry.properties.obsolete ? 1 : 0;
+        this.entry.obsolete = this.entry.obsolete ? 1 : 0;
       },
 
       _isObsolete: function(obsolete) {
@@ -58,7 +58,7 @@
       },
 
       _obsoleteChanged: function() {
-        this.entry.properties.obsolete = this.entry.properties.obsolete > 0 ? 0 : 1;
+        this.entry.obsolete = this.entry.obsolete > 0 ? 0 : 1;
       }
 
     });

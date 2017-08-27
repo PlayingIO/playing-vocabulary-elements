@@ -11,37 +11,37 @@
     <mostly-select role="widget"
             label="[[i18n('vocabularyManagement.edit.parent')]]"
             placeholder="[[i18n('vocabularyManagement.selectParent')]]"
-            selected="{{entry.properties.parent}}"
+            selected="{{entry.parent}}"
             attr-for-selected="name"
             required>
       <template is="dom-repeat" items="[[parentResponse.entries]]">
-        <paper-item name="[[item.properties.id]]">[[item.properties.id]]</paper-item>
+        <paper-item name="[[item.id]]">[[item.id]]</paper-item>
       </template>
     </mostly-select>
 
     <nuxeo-input role="widget"
             label="[[i18n('vocabularyManagement.edit.id')]]"
             name="id"
-            value="{{entry.properties.id::change}}"
+            value="{{entry.id::change}}"
             readonly$="[[!new]]"
             required></nuxeo-input>
 
     <nuxeo-input role="widget"
             label="[[i18n('vocabularyManagement.edit.label')]]"
             name="label"
-            value="{{entry.properties.label::change}}"></nuxeo-input>
+            value="{{entry.label::change}}"></nuxeo-input>
 
     <div role="widget">
       <label>[[i18n('vocabularyManagement.edit.obsolete')]]</label>
-      <paper-toggle-button value="{{entry.properties.label::change}}"
-              checked$="[[_isObsolete(entry.properties.obsolete)]]"
+      <paper-toggle-button value="{{entry.label::change}}"
+              checked$="[[_isObsolete(entry.obsolete)]]"
               on-change="_obsoleteChanged" noink></paper-toggle-button>
     </div>
 
     <nuxeo-input role="widget"
             label="[[i18n('vocabularyManagement.edit.ordering')]]"
             name="ordering"
-            value="{{entry.properties.ordering::change}}"></nuxeo-input>
+            value="{{entry.ordering::change}}"></nuxeo-input>
   </template>
 
   <script>
@@ -69,10 +69,10 @@
       },
 
       _obsoleteChanged: function() {
-        if (this.entry.properties.obsolete > 0) {
-          this.entry.properties.obsolete = 0;
+        if (this.entry.obsolete > 0) {
+          this.entry.obsolete = 0;
         } else {
-          this.entry.properties.obsolete = 1;
+          this.entry.obsolete = 1;
         }
       },
 

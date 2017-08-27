@@ -8,7 +8,7 @@
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 <link rel="import" href="../../mostly-elements/mostly-app/mostly-page.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
-<link rel="import" href="../../mostly-elements/mostly-common/mostly-layout.html">
+<link rel="import" href="../../mostly-elements/mostly-layout.html">
 <link rel="import" href="../../mostly-elements/mostly-data-table/iron-data-table.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-select.html">
 
@@ -62,7 +62,7 @@
       }
     </style>
 
-    <mostly-resource id="directory" path="/directory"></mostly-resource>
+    <mostly-resource id="voc" path="vocabularies"></mostly-resource>
 
     <mostly-page>
       <div class="header layout horizontal">
@@ -160,9 +160,9 @@
 
       _visibleChanged: function() {
         if (this.visible && !this.vocabularies) {
-          this.$.directory.get().then(function(response) {
-            this.vocabularies = response.entries;
-          }.bind(this));
+          this.$.voc.get().then((response) => {
+            this.vocabularies = response.data;
+          });
         }
       },
 
@@ -170,13 +170,13 @@
        * Returns the href for the current layout element
        */
       _layoutHref: function(schema) {
-        return this.resolveUrl(schema + '/playing-' + schema + '-edit-layout.html');
+        return this.resolveUrl('playing-' + schema + '-edit-layout.html');
       },
 
       _layoutModel: function() {
         return {
           entry: this._selectedEntry,
-          parentDirectory: this._getParentDirectoryFor(this._selectedEntry),
+          parent: this._getParentFor(this._selectedEntry),
           entries: this.entries,
           "new": this._new
         };
@@ -188,7 +188,7 @@
         }
         var schema = '';
         for (var i in this.vocabularies) {
-          if (this.vocabularies[i].name === entry.directoryName) {
+          if (this.vocabularies[i].name === entry.type) {
             schema = this.vocabularies[i].schema;
             break;
           }
@@ -199,10 +199,10 @@
         return schema;
       },
 
-      _getParentDirectoryFor: function(entry) {
+      _getParentFor: function(entry) {
         var parent = '';
         for (var i in this.vocabularies) {
-          if (this.vocabularies[i].name === entry.directoryName) {
+          if (this.vocabularies[i].name === entry.type) {
             parent = this.vocabularies[i].parent;
             break;
           }
@@ -216,23 +216,30 @@
 
       _refresh: function() {
         if (this.selectedVocabulary && this.selectedVocabulary.length > 0) {
-          this.$.directory.path = '/directory/' + this.selectedVocabulary;
+          this.$.voc.path = '/vocabularies/' + this.selectedVocabulary;
           this.entries = [];
           this.colDef = [];
-          this.$.directory.get().then(function(resp) {
+          this.$.voc.get().then((resp) => {
             var tmp = [];
-            if (resp.entries.length > 0) {
-              tmp = Object.keys(resp.entries[0].properties).map(function(key) {
-                return {key: key, name: 'vocabularyManagement.edit.' + key, pos: this._computeColPos(key)};
-              }.bind(this));
+            if (resp.data.length > 0) {
+              tmp = Object.keys(resp.data[0]).map((key) => {
+                return {
+                  key: key,
+                  name: 'vocabularyManagement.edit.' + key,
+                  pos: this._computeColPos(key)
+                };
+              });
             }
-            tmp.push({key: 'actions', name: 'vocabularyManagement.edit.actions', pos: 1000, actions: true});
-            tmp.sort(function(a, b) {
-              return a.pos - b.pos;
+            tmp.push({
+              key: 'actions',
+              name: 'vocabularyManagement.edit.actions',
+              pos: 1000,
+              actions: true
             });
+            tmp.sort((a, b) => a.pos - b.pos);
             this.colDef = tmp;
-            this.entries = resp.entries;
-          }.bind(this));
+            this.entries = resp.data;
+          });
         }
       },
 
@@ -241,11 +248,11 @@
       },
 
       _value: function(entry, prop) {
-        if (entry && entry.properties && prop) {
+        if (entry && entry && prop) {
           if (prop === 'obsolete') {
-            return entry.properties[prop] > 0 ? this.i18n('label.yes') : this.i18n('label.no');
+            return entry[prop] > 0 ? this.i18n('label.yes') : this.i18n('label.no');
           }
-          return entry.properties[prop];
+          return entry[prop];
         } else {
           console.error('Could not resolve property ' + prop);
           return 'N/A';
@@ -269,19 +276,23 @@
       _deleteEntry: function(e) {
         if (confirm(this.i18n('vocabularyManagement.confirmDelete'))) {
           var item = e.model.dataHost.parentNode.item;
-          this.$.directory.path = '/directory/' + item.directoryName + '/' + item.properties.id;
-          this.$.directory.remove().then(function() {
+          this.$.voc.path = '/vocabularies/' + item.type + '/' + item.id;
+          this.$.voc.remove().then(() => {
             this._refresh();
             this.fire('notify', {message: this.i18n('vocabularyManagement.successfullyDeleted')});
-          }.bind(this), function(err) {
+          }, (err) => {
             if (err.status === 401) {
-              this.fire('notify', {message: this.i18n('label.error').toUpperCase() + ': ' +
-                                            this.i18n('vocabularyManagement.cannotDelete.referencedEntry')});
+              this.fire('notify', {
+                message: this.i18n('label.error').toUpperCase() + ': ' +
+                         this.i18n('vocabularyManagement.cannotDelete.referencedEntry')
+              });
             } else {
-              this.fire('notify', {message: this.i18n('label.error').toUpperCase() + ': ' +
-                                            this.i18n('vocabularyManagement.cannotDelete.error')});
+              this.fire('notify', {
+                message: this.i18n('label.error').toUpperCase() + ': ' +
+                         this.i18n('vocabularyManagement.cannotDelete.error')
+              });
             }
-          }.bind(this));
+          });
         }
       },
 
@@ -297,32 +308,33 @@
 
       _save: function() {
 
-        this.$.directory.data = this._selectedEntry;
+        this.$.voc.data = this._selectedEntry;
         if (this._new) {
-          this.$.directory.path = '/directory/' + this._selectedEntry.directoryName;
-          this.$.directory.post().then(function() {
+          this.$.voc.path = '/vocabularies/';
+          this.$.voc.post().then(() => {
             this.$.dialog.toggle();
-            this.fire('notify', {message: this.i18n('vocabularyManagement.successfullyCreated')});
+            this.fire('notify', { message: this.i18n('vocabularyManagement.successfullyCreated') });
             this._refresh();
-          }.bind(this),
-          function(err) {
-            this.fire('notify', {message: this.i18n('label.error').toUpperCase() + ': ' +
-                                          (err.message && err.message.length > 0 ? err.message :
-                                           this.i18n('vocabularyManagement.cannotCreate'))});
-          }.bind(this));
+          }, (err) => {
+            this.fire('notify', {
+              message: this.i18n('label.error').toUpperCase() + ': ' +
+                       (err.message && err.message.length > 0 ? err.message :
+                       this.i18n('vocabularyManagement.cannotCreate'))
+            });
+          });
         } else {
-          this.$.directory.path = '/directory/' + this._selectedEntry.directoryName +
-            '/' + this._selectedEntry.properties.id;
-          this.$.directory.put().then(function() {
+          this.$.voc.path = '/vocabularies/' + this._selectedEntry.id;
+          this.$.voc.put().then(() => {
             this.$.dialog.toggle();
-            this.fire('notify', {message: this.i18n('vocabularyManagement.successfullyEdited')});
+            this.fire('notify', { message: this.i18n('vocabularyManagement.successfullyEdited') });
             this._refresh();
-          }.bind(this),
-          function(err) {
-            this.fire('notify', {message: this.i18n('label.error').toUpperCase() + ': ' +
-                                          (err.message && err.message.length > 0 ? err.message :
-                                           this.i18n('vocabularyManagement.cannotEdit'))});
-          }.bind(this));
+          }, (err) => {
+            this.fire('notify', {
+              message: this.i18n('label.error').toUpperCase() + ': ' +
+                       (err.message && err.message.length > 0 ? err.message :
+                       this.i18n('vocabularyManagement.cannotEdit'))
+            });
+          });
         }
       },
 
@@ -331,14 +343,8 @@
       },
 
       _createEntry: function() {
-        var emptyEntry = JSON.parse(JSON.stringify(this.entries[0]));
-        for (var property in this.entries[0].properties) {
-          if (this.entries[0].properties.hasOwnProperty(property)) {
-            emptyEntry.properties[property] = undefined;
-          }
-        }
         this._new = true;
-        this._selectedEntry = emptyEntry;
+        this._selectedEntry = { type: this.selectedVocabulary };
         this.$.dialog.toggle();
       }
 
