@@ -6,7 +6,7 @@
 <dom-module id="playing-xvocabulary-edit-layout">
   <template>
 
-    <mostly-resource id="directory" path="/directory/[[parentDirectory]]" response="{{parentResponse}}"></mostly-resource>
+    <mostly-resource id="voc" path="vocabularies" response="{{parentResponse}}"></mostly-resource>
 
     <mostly-select role="widget"
             label="[[i18n('vocabularyManagement.edit.parent')]]"
@@ -14,7 +14,7 @@
             selected="{{entry.parent}}"
             attr-for-selected="name"
             required>
-      <template is="dom-repeat" items="[[parentResponse.entries]]">
+      <template is="dom-repeat" items="[[parentResponse.data]]">
         <paper-item name="[[item.id]]">[[item.id]]</paper-item>
       </template>
     </mostly-select>
@@ -58,7 +58,7 @@
           value: false
         },
 
-        parentDirectory: {
+        parent: {
           type: String,
           observer: '_observeParent'
         }
@@ -77,8 +77,9 @@
       },
 
       _observeParent: function() {
-        if (this.parentDirectory && this.parentDirectory.length > 0) {
-          this.$.directory.get();
+        if (this.parent && this.parent.length > 0) {
+          this.$.voc.params = { parent: this.parent };
+          this.$.voc.get();
         }
       }
 

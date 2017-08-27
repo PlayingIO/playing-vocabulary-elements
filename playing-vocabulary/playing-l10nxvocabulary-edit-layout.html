@@ -90,7 +90,7 @@
 
         _root: {
           type: Object,
-          value: { properties: { id: '', parent: '' }, root: true, id: 'root' }
+          value: { id: 'root', parent: null, root: true }
         }
       },
 
@@ -108,21 +108,24 @@
         this.entry.obsolete = this.entry.obsolete > 0 ? 0 : 1;
       },
 
+      _setParentLabel: function(parent) {
+      if (parent && parent.length > 0 && parent !== 'root') {
+          this._parentLabel = parent;
+        } else {
+          this._parentLabel = this.i18n('vocabularyManagement.edit.selectParent');
+        }
+      },
+
       _inputChanged: function() {
         if (this.entry) {
-          if (this.entry.parent && this.entry.parent.length > 0) {
-            this._parentLabel = this.entry.parent;
-          } else {
-            this._parentLabel = this.i18n('vocabularyManagement.edit.selectParent');
-          }
+          this._setParentLabel(this.entry.parent);
           if (this.entries) {
             this.controller = {
               getChildren: (node) => {
                 return new Promise((resolve) => {
-                  var targetParentId = !node ? '' : node.id;
+                  var targetParentId = node && node.id !== 'root'? node.id : null;
                   var children = this.entries.filter((e) => {
                     if (e.parent === targetParentId && e.id !== this.entry.id) {
-                      // e.id = e.properties.id;
                       return true;
                     }
                   });
@@ -148,8 +151,8 @@
       },
 
       _selectParent: function(e) {
-        this.entry.parent = e.detail.item.id;
-        this._parentLabel = this.entry.parent;
+        this.entry.parent = e.detail.item.id !== 'root'? e.detail.item.id : null;
+        this._setParentLabel(this.entry.parent);
         this._toggleParent();
       },
 

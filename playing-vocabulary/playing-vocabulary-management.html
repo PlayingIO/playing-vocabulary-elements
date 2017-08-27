@@ -220,15 +220,21 @@
           this.entries = [];
           this.colDef = [];
           this.$.voc.get().then((resp) => {
+            this.entries = (resp.data || []).map(obj => {
+              obj.parent = obj.parent || null;
+              return obj;
+            });
             var tmp = [];
-            if (resp.data.length > 0) {
-              tmp = Object.keys(resp.data[0]).map((key) => {
-                return {
-                  key: key,
-                  name: 'vocabularyManagement.edit.' + key,
-                  pos: this._computeColPos(key)
-                };
-              });
+            if (this.entries.length > 0) {
+              tmp = Object.keys(this.entries[0])
+                .filter((key) => key !== 'type')
+                .map((key) => {
+                  return {
+                    key: key,
+                    name: 'vocabularyManagement.edit.' + key,
+                    pos: this._computeColPos(key)
+                  };
+                });
             }
             tmp.push({
               key: 'actions',
@@ -238,7 +244,6 @@
             });
             tmp.sort((a, b) => a.pos - b.pos);
             this.colDef = tmp;
-            this.entries = resp.data;
           });
         }
       },
