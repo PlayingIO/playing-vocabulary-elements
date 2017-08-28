@@ -220,10 +220,14 @@
           this.entries = [];
           this.colDef = [];
           this.$.voc.get().then((resp) => {
-            this.entries = (resp.data || []).map(obj => {
-              obj.parent = obj.parent || null;
-              return obj;
-            });
+            var currentVocabulary = this.vocabularies.filter(v => v.name === this.selectedVocabulary);
+            this.entries = resp.data || [];
+            if (currentVocabulary.length > 0 && currentVocabulary[0].parent) {
+              this.entries = this.entries.map(obj => {
+                obj.parent = obj.parent || null;
+                return obj;
+              });
+            }
             var tmp = [];
             if (this.entries.length > 0) {
               tmp = Object.keys(this.entries[0])
@@ -271,7 +275,7 @@
           return 2;
         } else if (key === 'obsolete') {
           return 98;
-        } else if (key === 'ordering') {
+        } else if (key === 'position') {
           return 99;
         } else {
           return 50;
