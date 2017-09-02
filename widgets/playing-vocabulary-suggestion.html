@@ -174,17 +174,16 @@ An element for selecting one or more entries from a given vocabulary.
       },
 
       _resolveEntry: function(entry) {
-        if (entry && entry['type'] && entry['type'] === 'vocabulary') {
-          if (entry && entry.label) {
+        if (entry && entry['type']) {
+          if (entry.dbl10n) {
+            return {
+              id: entry.id,
+              displayLabel: entry.displayLabel
+            };
+          } else {
             return {
               id: entry.id,
               displayLabel: this.i18n(entry.label)
-            };
-          } else {
-            var label = 'label_' + ((window.mostly.I18n.language) ? window.mostly.I18n.language.split('-')[0] : 'en');
-            return {
-              id: entry.id,
-              displayLabel: entry[label] || entry['label_en']
             };
           }
         }

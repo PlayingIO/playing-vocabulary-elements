@@ -31,6 +31,11 @@
             name="label"
             value="{{entry.label::change}}"></nuxeo-input>
 
+    <nuxeo-input role="widget"
+            label="[[i18n('vocabularyManagement.edit.value')]]"
+            name="value"
+            value="{{entry.value::change}}"></nuxeo-input>
+
     <div role="widget">
       <label>[[i18n('vocabularyManagement.edit.obsolete')]]</label>
       <paper-toggle-button value="{{entry.label::change}}"
