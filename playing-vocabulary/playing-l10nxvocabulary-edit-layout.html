@@ -31,27 +31,27 @@
       </paper-dialog>
     </div>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.id')]]"
             name="id"
             value="{{entry.id::change}}"
             readonly$="[[!new]]"
-            required></nuxeo-input>
+            required></mostly-input>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.label_en')]]"
             name="label"
-            value="{{entry.label_en::change}}"></nuxeo-input>
+            value="{{entry.label_en::change}}"></mostly-input>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.label_zh')]]"
             name="label"
-            value="{{entry.label_zh::change}}"></nuxeo-input>
+            value="{{entry.label_zh::change}}"></mostly-input>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.value')]]"
             name="value"
-            value="{{entry.value::change}}"></nuxeo-input>
+            value="{{entry.value::change}}"></mostly-input>
 
     <div role="widget">
       <label>[[i18n('vocabularyManagement.edit.obsolete')]]</label>
@@ -60,11 +60,11 @@
               on-change="_obsoleteChanged" noink></paper-toggle-button>
     </div>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.position')]]"
             name="position"
             type="number"
-            value="{{entry.position::change}}"></nuxeo-input>
+            value="{{entry.position::change}}"></mostly-input>
 
   </template>
 

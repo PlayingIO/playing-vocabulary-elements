@@ -19,22 +19,22 @@
       </template>
     </mostly-select>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.id')]]"
             name="id"
             value="{{entry.id::change}}"
             readonly$="[[!new]]"
-            required></nuxeo-input>
+            required></mostly-input>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.label')]]"
             name="label"
-            value="{{entry.label::change}}"></nuxeo-input>
+            value="{{entry.label::change}}"></mostly-input>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.value')]]"
             name="value"
-            value="{{entry.value::change}}"></nuxeo-input>
+            value="{{entry.value::change}}"></mostly-input>
 
     <div role="widget">
       <label>[[i18n('vocabularyManagement.edit.obsolete')]]</label>
@@ -43,10 +43,10 @@
               on-change="_obsoleteChanged" noink></paper-toggle-button>
     </div>
 
-    <nuxeo-input role="widget"
+    <mostly-input role="widget"
             label="[[i18n('vocabularyManagement.edit.position')]]"
             name="position"
-            value="{{entry.position::change}}"></nuxeo-input>
+            value="{{entry.position::change}}"></mostly-input>
   </template>
 
   <script>
