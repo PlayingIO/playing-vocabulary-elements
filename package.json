@@ -1,7 +1,7 @@
 {
   "name": "playing-vocabulary-elements",
-  "description": "Fixed list of values (vocabularies) management web components for playful application",
-  "version": "1.0.0",
+  "description": "Fixed list of values (vocabularies) management web components for playful applications",
+  "version": "1.0.1",
   "license": "MIT",
   "devDependencies": {
     "browser-sync": "^2.10.0",
