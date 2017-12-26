@@ -5,30 +5,41 @@
 -->
 <dom-module id="playing-l10nxvocabulary-edit-layout">
   <template>
+    <style>
+      *[role=widget] {
+        margin-bottom: 16px;
+      }
+
+      label {
+        @apply --nuxeo-label;
+      }
+    </style>
 
     <div role="widget">
       <label>[[i18n('vocabularyManagement.edit.parent')]]</label>
       <paper-button id="selectParent" on-tap="_toggleParent">[[_parentLabel]]</paper-button>
-      <paper-dialog id="parentDialog" modal no-auto-focus>
+      <mostly-dialog id="parentDialog" with-backdrop>
         <h2>[[i18n('vocabularyManagement.selectParent')]]</h2>
-        <form id="form" is="iron-form">
-          <mostly-tree id="tree" data="[[_root]]" controller="[[controller]]" node-key="id" on-select="_selectParent">
-            <template>
-              <div name$="[[item.id]]">
-                <template is="dom-if" if="[[!isLeaf]]">
-                  <iron-icon icon="[[_expandIcon(opened)]]" toggle></iron-icon>
-                </template>
-                <span class="flex node-name" select>
-                <a class="parent">[[item.id]]</a>
-              </span>
-              </div>
-            </template>
-          </mostly-tree>
-        </form>
+        <iron-form id="form">
+          <form>
+            <mostly-tree id="tree" data="[[_root]]" controller="[[controller]]" node-key="id" on-select="_selectParent">
+              <template>
+                <div name$="[[item.id]]">
+                  <template is="dom-if" if="[[!isLeaf]]">
+                    <iron-icon icon="[[_expandIcon(opened)]]" toggle></iron-icon>
+                  </template>
+                  <span class="flex node-name" select>
+                  <a class="parent">[[item.id]]</a>
+                </span>
+                </div>
+              </template>
+            </mostly-tree>
+          </form>
+        </iron-form>
         <div class="buttons">
           <paper-button name="close" dialog-dismiss>[[i18n('command.close')]]</paper-button>
         </div>
-      </paper-dialog>
+      </mostly-dialog>
     </div>
 
     <mostly-input role="widget"

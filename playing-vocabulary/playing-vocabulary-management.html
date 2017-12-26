@@ -1,16 +1,18 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../paper-card/paper-card.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../../paper-dialog/paper-dialog.html">
+
 <link rel="import" href="../../mostly-elements/mostly-app/mostly-page.html">
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
 <link rel="import" href="../../mostly-elements/mostly-layout.html">
 <link rel="import" href="../../mostly-elements/mostly-data-table/iron-data-table.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-select.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
 
 <!--
 `playing-vocabulary-management`
@@ -29,9 +31,9 @@
       }
 
       .top.actions {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
-        @apply(--layout-end-justified);
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        @apply --layout-end-justified;
         margin: 1em 0 1em 0;
       }
 
@@ -39,20 +41,20 @@
         max-width: 223px;
       }
 
-      ::content paper-dialog {
+      mostly-dialog {
         min-width: 480px;
       }
 
       @media (max-width: 1024px) {
-        ::content paper-dialog {
+        mostly-dialog {
           min-width: 0;
           width: 90%;
         }
       }
 
-      ::content paper-dialog ::content .buttons {
-        @apply(--layout-horizontal);
-        @apply(--layout-justified);
+      mostly-dialog .buttons {
+        @apply --layout-horizontal;
+        @apply --layout-justified;
         margin-top: 16px;
         background-color: var(--mostly-dialog-buttons-bar, white);
       }
@@ -65,11 +67,11 @@
     <mostly-resource id="voc" path="vocabularies"></mostly-resource>
 
     <mostly-page>
-      <div class="header layout horizontal">
+      <div slot="header">
         <span>[[i18n('vocabularyManagement.heading')]]</span>
       </div>
 
-      <div class="content">
+      <div>
         <paper-card elevation="0" class="block">
           <mostly-select label="[[i18n('vocabularyManagement.vocabulary')]]"
                   placeholder="[[i18n('vocabularyManagement.select')]]"
@@ -93,7 +95,7 @@
               <mostly-data-table-column name="[[i18n(col.name)]]" key="[[col.key]]">
                 <template>
                   <template is="dom-if" if="[[!_entryActions(column.key)]]">
-                    [[_value(item, column.key)]]
+                    [[_value(index, column.key)]]
                   </template>
                   <template is="dom-if" if="[[_entryActions(column.key)]]">
                     <paper-icon-button id="edit-button-[[index]]" icon="mostly:edit" on-tap="_editEntry"></paper-icon-button>
@@ -109,20 +111,22 @@
       </div>
     </mostly-page>
 
-    <paper-dialog id="dialog" with-backdrop no-auto-focus>
+    <nuxeo-dialog id="vocabularyEditDialog" with-backdrop>
       <h2>[[i18n('vocabularyManagement.popup.editEntry')]]</h2>
-      <form id="form" is="iron-form" action="/">
-        <mostly-layout id="layout"
-                href="[[_layoutHref(_selectedSchema)]]"
-                model="[[_layoutModel(_selectedEntry)]]"
-                error="[[i18n('documentVocabularyManagement.layoutNotFound', _selectedSchema)]]">
-        </mostly-layout>
-      </form>
+      <iron-form id="form">
+        <form>
+          <mostly-layout id="layout"
+                  href="[[_layoutHref(_selectedSchema)]]"
+                  model="[[_layoutModel(_selectedEntry)]]"
+                  error="[[i18n('documentVocabularyManagement.layoutNotFound', _selectedSchema)]]">
+          </mostly-layout>
+        </form>
+      </iron-form>
       <div class="buttons">
         <paper-button name="cancel" noink dialog-dismiss>[[i18n('command.cancel')]]</paper-button>
         <paper-button name="save" noink class="primary" on-tap="_save">[[i18n('command.save')]]</paper-button>
       </div>
-    </paper-dialog>
+    </nuxeo-dialog>
 
   </template>
 
@@ -248,6 +252,10 @@
             });
             tmp.sort((a, b) => a.pos - b.pos);
             this.colDef = tmp;
+
+            var table = this.$$('#table');
+            table.items = [];
+            table.items = this.entries;
           });
         }
       },
@@ -256,7 +264,8 @@
         return this.selectedVocabulary && this.selectedVocabulary.length > 0;
       },
 
-      _value: function(entry, prop) {
+      _value: function(index, prop) {
+        var entry = this.entries[index];
         if (entry && entry && prop) {
           if (prop === 'obsolete') {
             return entry[prop] > 0 ? this.i18n('label.yes') : this.i18n('label.no');
@@ -288,7 +297,7 @@
 
       _deleteEntry: function(e) {
         if (confirm(this.i18n('vocabularyManagement.confirmDelete'))) {
-          var item = e.model.dataHost.parentNode.item;
+          var item = e.target.parentNode.item;
           this.$.voc.path = '/vocabularies/' + item.type + '/' + item.id;
           this.$.voc.remove().then(() => {
             this._refresh();
@@ -311,8 +320,8 @@
 
       _editEntry: function(e) {
         this._new = false;
-        this._selectedEntry = e.model.dataHost.parentNode.item;
-        this.$.dialog.toggle();
+        this._selectedEntry = e.target.parentNode.item;
+        this.$.vocabularyEditDialog.toggle();
       },
 
       _cancel: function() {
@@ -320,12 +329,14 @@
       },
 
       _save: function() {
-
+        if (!this.$.layout.validate()) {
+          return;
+        }
         this.$.voc.data = this._selectedEntry;
         if (this._new) {
           this.$.voc.path = '/vocabularies/';
           this.$.voc.post().then(() => {
-            this.$.dialog.toggle();
+            this.$.vocabularyEditDialog.toggle();
             this.fire('notify', { message: this.i18n('vocabularyManagement.successfullyCreated') });
             this._refresh();
           }, (err) => {
@@ -338,7 +349,7 @@
         } else {
           this.$.voc.path = '/vocabularies/' + this._selectedEntry.id;
           this.$.voc.put().then(() => {
-            this.$.dialog.toggle();
+            this.$.vocabularyEditDialog.toggle();
             this.fire('notify', { message: this.i18n('vocabularyManagement.successfullyEdited') });
             this._refresh();
           }, (err) => {
@@ -358,7 +369,7 @@
       _createEntry: function() {
         this._new = true;
         this._selectedEntry = { type: this.selectedVocabulary };
-        this.$.dialog.toggle();
+        this.$.vocabularyEditDialog.toggle();
       }
 
     });
