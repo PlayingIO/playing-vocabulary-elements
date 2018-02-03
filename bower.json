@@ -1,5 +1,5 @@
 {
-  "name": "user-elements",
+  "name": "playing-vocabulary-elements",
   "private": true,
   "dependencies": {
     "app-layout": "PolymerElements/app-layout#^2.0.0",
