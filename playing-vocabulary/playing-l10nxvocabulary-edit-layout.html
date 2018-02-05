@@ -18,7 +18,9 @@
     <div role="widget">
       <label>[[i18n('vocabularyManagement.edit.parent')]]</label>
       <paper-button id="selectParent" on-tap="_toggleParent">[[_parentLabel]]</paper-button>
-      <mostly-dialog id="parentDialog" with-backdrop>
+      <!-- open issue: Embedded modal dialogs hide behind the overlay
+           https://github.com/PolymerElements/iron-overlay-behavior/issues/259 -->
+      <mostly-dialog id="parentDialog" with-backdrop="false">
         <h2>[[i18n('vocabularyManagement.selectParent')]]</h2>
         <iron-form id="form">
           <form>
