@@ -1,7 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../paper-button/paper-button.html">
-<link rel="import" href="../../paper-card/paper-card.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
@@ -11,8 +10,9 @@
 <link rel="import" href="../../mostly-elements/mostly-common/mostly-resource.html">
 <link rel="import" href="../../mostly-elements/mostly-layout.html">
 <link rel="import" href="../../mostly-elements/mostly-data-table/iron-data-table.html">
-<link rel="import" href="../../mostly-elements/widgets/mostly-select.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-card.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-select.html">
 
 <!--
 `playing-vocabulary-management`
@@ -72,7 +72,7 @@
       </div>
 
       <div>
-        <paper-card elevation="0" class="block">
+        <mostly-card>
           <mostly-select label="[[i18n('vocabularyManagement.vocabulary')]]"
                   placeholder="[[i18n('vocabularyManagement.select')]]"
                   selected="{{selectedVocabulary}}" attr-for-selected="name">
@@ -80,7 +80,7 @@
               <paper-item name$="[[vocabulary.name]]">[[vocabulary.name]]</paper-item>
             </template>
           </mostly-select>
-        </paper-card>
+        </mostly-card>
 
         <template is="dom-if" if="[[_isVocabularySelected(selectedVocabulary)]]">
           <div class="top actions">
