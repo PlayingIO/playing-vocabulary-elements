@@ -6,7 +6,7 @@
 <dom-module id="playing-xvocabulary-edit-layout">
   <template>
 
-    <mostly-resource id="voc" path="vocabularies" response="{{parentResponse}}"></mostly-resource>
+    <mostly-resource id="voc" path="vocabularies" response-data="{{parentResponse}}"></mostly-resource>
 
     <mostly-select role="widget"
             label="[[i18n('vocabularyManagement.edit.parent')]]"
@@ -14,7 +14,7 @@
             selected="{{entry.parent}}"
             attr-for-selected="name"
             required>
-      <template is="dom-repeat" items="[[parentResponse.data]]">
+      <template is="dom-repeat" items="[[parentResponse]]">
         <paper-item name="[[item.id]]">[[item.id]]</paper-item>
       </template>
     </mostly-select>
