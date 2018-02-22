@@ -5,6 +5,11 @@
 -->
 <dom-module id="playing-xvocabulary-edit-layout">
   <template>
+    <style include="moslty-styles playing-styles">
+      :host {
+        display: block;
+      }
+    </style>
 
     <mostly-resource id="voc" path="vocabularies" response-data="{{parentResponse}}"></mostly-resource>
 

@@ -13,6 +13,7 @@
 <link rel="import" href="../../mostly-elements/widgets/mostly-card.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-dialog.html">
 <link rel="import" href="../../mostly-elements/widgets/mostly-select.html">
+<link rel="import" href="../../playing-elements/playing-styles.html">
 
 <!--
 `playing-vocabulary-management`
@@ -21,7 +22,7 @@
 -->
 <dom-module id="playing-vocabulary-management">
   <template>
-    <style>
+    <style include="mostly-styles playing-styles">
       :host {
         display: block;
       }
@@ -57,10 +58,6 @@
         @apply --layout-justified;
         margin-top: 16px;
         background-color: var(--mostly-dialog-buttons-bar, white);
-      }
-
-      ::content label {
-        @apply --mostly-label;
       }
     </style>
 
