@@ -1,7 +1,7 @@
 Playing Vocabulary Web Components
 =================================
 
-List of values (vocabularies) management web components for playful applications.
+Vocabularies (list of values) management web components for playful applications.
 
 # Usage
 
