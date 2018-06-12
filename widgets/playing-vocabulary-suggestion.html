@@ -43,7 +43,7 @@ An element for selecting one or more entries from a given vocabulary.
             selection-formatter="[[selectionFormatter]]"
             required="[[required]]"
             invalid="[[invalid]]"
-            init-selection="[[initSelection]]"
+            resolve-entry="[[resolveEntry]]"
             stay-open-on-select="[[stayOpenOnSelect]]"
             id-function="[[idFunction]]"
             query-results-filter="[[queryResultsFilter]]">
@@ -170,12 +170,12 @@ An element for selecting one or more entries from a given vocabulary.
         },
 
         /**
-         * Formatter for initial selection.
+         * Function that transforms the entries added using the value property into object
          */
-        initSelection: {
+        resolveEntry: {
           type: Function,
           value: function () {
-            return this._initSelection.bind(this);
+            return this._resolveEntry.bind(this);
           }
         },
 
@@ -201,15 +201,6 @@ An element for selecting one or more entries from a given vocabulary.
 
       _selectionFormatter: function(entry) {
         return entry.displayLabel;
-      },
-
-      _initSelection: function(element, callback) {
-        if (!this.multiple) {
-          return callback(this._resolveEntry(this.value));
-        }
-        return callback(
-          this.value.map((entry) => this._resolveEntry(entry))
-        );
       },
 
       _resolveEntry: function(entry) {
