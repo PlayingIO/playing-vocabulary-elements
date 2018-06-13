@@ -32,6 +32,7 @@ An element for selecting one or more entries from a given vocabulary.
             operation="[[operation]]"
             label="[[label]]"
             min-chars="[[minChars]]"
+            frequency="[[frequency]]"
             multiple="[[multiple]]"
             params="[[_computeParams(params.*, vocabularyName, dbl10n)]]"
             placeholder="[[placeholder]]"
@@ -142,6 +143,11 @@ An element for selecting one or more entries from a given vocabulary.
           type: Number,
           value: 3
         },
+
+        /**
+         * Time in ms used to debounce requests.
+         */
+        frequency: Number,
 
         /**
          * Placeholder.
