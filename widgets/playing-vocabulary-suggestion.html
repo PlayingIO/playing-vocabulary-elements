@@ -1,7 +1,9 @@
 <link rel="import" href="../../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../../iron-validatable-behavior/iron-validatable-behavior.html">
-<link rel="import" href="../../mostly-elements/widgets/mostly-selectivity.html">
+<link rel="import" href="../../mostly-elements/behaviors/mostly-format-behavior.html">
 <link rel="import" href="../../mostly-elements/behaviors/mostly-i18n-behavior.html">
+<link rel="import" href="../../mostly-elements/widgets/mostly-selectivity.html">
+
 
 <!--
 An element for selecting one or more entries from a given vocabulary.
@@ -54,7 +56,14 @@ An element for selecting one or more entries from a given vocabulary.
   <script>
     Polymer({
       is: 'playing-vocabulary-suggestion',
-      behaviors: [Mostly.I18nBehavior, Polymer.IronFormElementBehavior, Polymer.IronValidatableBehavior],
+
+      behaviors: [
+        Mostly.I18nBehavior,
+        Mostly.FormatBehavior,
+        Polymer.IronFormElementBehavior,
+        Polymer.IronValidatableBehavior
+      ],
+
       properties: {
 
         /**
@@ -186,6 +195,14 @@ An element for selecting one or more entries from a given vocabulary.
         },
 
         /**
+         * Separator used for hierachical vocabulary entry's label.
+         */
+        separator: {
+          type: String,
+          value: '/'
+        },
+
+        /**
          * Function that transforms the entries added using the value property into object
          */
         resolveEntry: {
@@ -217,7 +234,7 @@ An element for selecting one or more entries from a given vocabulary.
       },
 
       _selectionFormatter: function(entry) {
-        return entry.displayLabel;
+        return entry.absoluteLabel || entry.displayLabel;
       },
 
       _resolveEntry: function(entry) {
@@ -225,12 +242,12 @@ An element for selecting one or more entries from a given vocabulary.
           if (entry.dbl10n) {
             return {
               id: entry.id,
-              displayLabel: entry.displayLabel
+              displayLabel: this.formatVocabulary(entry, this.separator)
             };
           } else {
             return {
               id: entry.id,
-              displayLabel: this.i18n(entry.label)
+              displayLabel: this.i18n(this.formatVocabulary(entry, this.separator))
             };
           }
         }
@@ -241,7 +258,7 @@ An element for selecting one or more entries from a given vocabulary.
       },
 
       _idFunction: function(item) {
-        return item.id || item.computedId;
+        return item.computedId || item.id;
       }
 
     });
