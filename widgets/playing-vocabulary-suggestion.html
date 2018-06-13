@@ -29,11 +29,11 @@ An element for selecting one or more entries from a given vocabulary.
 
     <mostly-selectivity id="s2"
             path="vocabularies"
-            operation="suggestions"
+            operation="[[operation]]"
             label="[[label]]"
             min-chars="[[minChars]]"
             multiple="[[multiple]]"
-            params="[[params]]"
+            params="[[_computeParams(params.*, vocabularyName, dbl10n)]]"
             placeholder="[[placeholder]]"
             error-message="[[errorMessage]]"
             readonly="[[readonly]]"
@@ -76,12 +76,17 @@ An element for selecting one or more entries from a given vocabulary.
         label: String,
 
         /**
-         * Computed parameters for the `Directory.SuggestEntries` operation.
+         * Operation to call for suggestions.
          */
-        params: {
-          type: Object,
-          computed: '_computeParams(vocabularyName, dbl10n)'
+        operation: {
+          type: String,
+          value: 'suggestions'
         },
+
+        /**
+         * Parameters for the operation.
+         */
+        params: Object,
 
         /**
          * Selected value(s).
@@ -191,12 +196,12 @@ An element for selecting one or more entries from a given vocabulary.
       },
 
       _computeParams: function() {
-        return this.params = {
+        return Object.assign({
           name: this.vocabularyName,
           dbl10n: this.dbl10n,
           localize : true,
           lang: (window.mostly.I18n.language) ? window.mostly.I18n.language.split('-')[0] : 'en'
-        };
+        }, this.params);
       },
 
       _selectionFormatter: function(entry) {
