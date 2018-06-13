@@ -1,0 +1,116 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../mostly-elements/mostly-common/mostly-operation.html">
+<link rel="import" href="../behaviors/playing-vocabulary-widget-behavior.html">
+
+<!--
+An element for selecting one vocabulary entry with a radio group widget.
+
+    <playing-vocabulary-radio-group vocabulary-name="country" value="{{value}}"></playing-vocabulary-radio-group>
+
+@group Playing Widgets
+@element playing-vocabulary-radio-group
+-->
+<dom-module id="playing-vocabulary-radio-group">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+        padding-bottom: 8px;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      :host([invalid]) .label,
+      .error {
+        color: var(--paper-input-container-invalid-color, red);
+      }
+
+      :host([invalid]) .error {
+        opacity: 1;
+        font-size: .923rem;
+      }
+
+      .label {
+         @apply --mostly-label;
+      }
+
+      .label[required]::after {
+        display: block;
+        content: '*';
+        position: absolute;
+        right: 0;
+        top: 0;
+        color: var(--paper-input-container-invalid-color, red);
+        font-size: 1.2em;
+      }
+
+      paper-checkbox {
+        margin-top: 10px
+      }
+
+    </style>
+
+    <mostly-operation id="op" path="vocabularies" op="suggestions"></mostly-operation>
+
+    <label class="label" hidden$="[[!label]]" required$="[[required]]">[[label]]</label>
+
+    <paper-radio-group on-selected-item-changed="_updateItem" selected="{{_selected}}">
+      <template is="dom-repeat" items="[[_entries]]">
+        <paper-radio-button name="[[idFunction(item)]]" data-index="[[index]]" checked="[[item.checked]]" disabled="[[readonly]]">
+          [[format(item)]]
+        </paper-radio-button>
+      </template>
+    </paper-radio-group>
+
+    <label class="error" hidden$="[[!invalid]]">[[errorMessage]]</label>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'playing-vocabulary-radio-group',
+      behaviors: [Playing.VocabularyWidgetBehavior],
+      properties: {
+
+        /**
+         * Selected entry.
+         */
+        value: {
+          type: String,
+          notify: true
+        },
+
+        _selected: String
+
+      },
+
+      _updateItem: function(e) {
+        if (e.detail && e.detail.value) {
+          this.set('value', this._entries[e.detail.value.dataIndex]);
+        }
+      },
+
+      /* Override method from Polymer.IronValidatableBehavior. */
+      _getValidity: function() {
+        if (this.required) {
+          return !!this.value;
+        }
+        return true;
+      },
+
+      _isChecked: function(entry) {
+        if (this.value && this.idFunction(this.value) === this.idFunction(entry)) {
+          this._selected = this.idFunction(entry);
+          return true;
+        }
+        return false;
+      }
+
+    });
+  </script>
+</dom-module>
