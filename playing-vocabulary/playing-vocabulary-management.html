@@ -162,7 +162,7 @@
 
       _visibleChanged: function() {
         if (this.visible && !this.vocabularies) {
-          this.$.voc.get().then((response) => {
+          this.$.voc.get().then(response => {
             this.vocabularies = response.data;
           });
         }
@@ -221,7 +221,7 @@
           this.$.voc.path = '/vocabularies/' + this.selectedVocabulary;
           this.entries = [];
           this.colDef = [];
-          this.$.voc.get().then((resp) => {
+          this.$.voc.get().then(resp => {
             var currentVocabulary = this.vocabularies.filter(v => v.name === this.selectedVocabulary);
             this.entries = resp.data || [];
             if (currentVocabulary.length > 0 && currentVocabulary[0].parent) {
@@ -234,7 +234,7 @@
             if (this.entries.length > 0) {
               tmp = Object.keys(this.entries[0])
                 .filter((key) => key !== 'type')
-                .map((key) => {
+                .map(key => {
                   return {
                     key: key,
                     name: 'vocabularyManagement.edit.' + key,
@@ -300,7 +300,7 @@
           this.$.voc.remove().then(() => {
             this._refresh();
             this.fire('notify', {message: this.i18n('vocabularyManagement.successfullyDeleted')});
-          }, (err) => {
+          }, err => {
             if (err.status === 401) {
               this.fire('notify', {
                 message: this.i18n('label.error').toUpperCase() + ': ' +
@@ -339,7 +339,7 @@
             this.$.vocabularyEditDialog.toggle();
             this.fire('notify', { message: this.i18n('vocabularyManagement.successfullyCreated') });
             this._refresh();
-          }, (err) => {
+          }, err => {
             this.fire('notify', {
               message: this.i18n('label.error').toUpperCase() + ': ' +
                        (err.message && err.message.length > 0 ? err.message :
@@ -352,7 +352,7 @@
             this.$.vocabularyEditDialog.toggle();
             this.fire('notify', { message: this.i18n('vocabularyManagement.successfullyEdited') });
             this._refresh();
-          }, (err) => {
+          }, err => {
             this.fire('notify', {
               message: this.i18n('label.error').toUpperCase() + ': ' +
                        (err.message && err.message.length > 0 ? err.message :

@@ -126,7 +126,7 @@ An element for selecting one or more vocabulary entries with checkboxes.
 
       _isChecked: function(entry) {
         var value = this.value || this.selectedItems;
-        return value && value.some((el) => {
+        return value && value.some(el => {
           if (this.idFunction(el) === this.idFunction(entry)) {
             this._selected.push(this.idFunction(entry));
             return true;
