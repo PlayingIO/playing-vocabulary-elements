@@ -266,7 +266,7 @@
         var entry = this.entries[index];
         if (entry && entry && prop) {
           if (prop === 'obsolete') {
-            return entry[prop] > 0 ? this.i18n('label.yes') : this.i18n('label.no');
+            return entry[prop] > 0? this.i18n('label.yes') : this.i18n('label.no');
           }
           return entry[prop];
         } else {
@@ -342,7 +342,7 @@
           }, err => {
             this.fire('notify', {
               message: this.i18n('label.error').toUpperCase() + ': ' +
-                       (err.message && err.message.length > 0 ? err.message :
+                       (err.message && err.message.length > 0? err.message :
                        this.i18n('vocabularyManagement.cannotCreate'))
             });
           });
@@ -355,7 +355,7 @@
           }, err => {
             this.fire('notify', {
               message: this.i18n('label.error').toUpperCase() + ': ' +
-                       (err.message && err.message.length > 0 ? err.message :
+                       (err.message && err.message.length > 0? err.message :
                        this.i18n('vocabularyManagement.cannotEdit'))
             });
           });

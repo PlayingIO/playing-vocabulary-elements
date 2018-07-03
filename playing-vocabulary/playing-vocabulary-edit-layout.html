@@ -60,7 +60,7 @@
       },
 
       _entryChanged: function() {
-        this.entry.obsolete = this.entry.obsolete ? 1 : 0;
+        this.entry.obsolete = this.entry.obsolete? 1 : 0;
       },
 
       _isObsolete: function(obsolete) {
@@ -68,7 +68,7 @@
       },
 
       _obsoleteChanged: function() {
-        this.entry.obsolete = this.entry.obsolete > 0 ? 0 : 1;
+        this.entry.obsolete = this.entry.obsolete > 0? 0 : 1;
       }
 
     });

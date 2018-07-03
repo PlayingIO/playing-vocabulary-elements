@@ -111,7 +111,7 @@
       observers: ['_inputChanged(entry, entries)'],
 
       _entryChanged: function() {
-        this.entry.obsolete = this.entry.obsolete ? 1 : 0;
+        this.entry.obsolete = this.entry.obsolete? 1 : 0;
       },
 
       _isObsolete: function(obsolete) {
@@ -119,7 +119,7 @@
       },
 
       _obsoleteChanged: function() {
-        this.entry.obsolete = this.entry.obsolete > 0 ? 0 : 1;
+        this.entry.obsolete = this.entry.obsolete > 0? 0 : 1;
       },
 
       _setParentLabel: function(parent) {
@@ -161,7 +161,7 @@
       },
 
       _expandIcon: function(opened) {
-        return 'hardware:keyboard-arrow-' + (opened ? 'down' : 'right');
+        return 'hardware:keyboard-arrow-' + (opened? 'down' : 'right');
       },
 
       _selectParent: function(e) {

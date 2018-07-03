@@ -93,7 +93,7 @@
               'dbl10n': this.dbl10n,
               'canSelectParent': this.canSelectParent,
               'localize' : true,
-              'lang': (window.mostly.I18n.language) ? window.mostly.I18n.language.split('-')[0] : 'en'
+              'lang': (window.mostly.I18n.language)? window.mostly.I18n.language.split('-')[0] : 'en'
              };
             this.$.op.execute().then(resp => {
               this._entries = [];
