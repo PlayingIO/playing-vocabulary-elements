@@ -299,7 +299,7 @@
           this.$.voc.path = '/vocabularies/' + item.type + '/' + item.id;
           this.$.voc.remove().then(() => {
             this._refresh();
-            this.fire('notify', {message: this.i18n('vocabularyManagement.successfullyDeleted')});
+            this.fire('notify', { message: this.i18n('vocabularyManagement.successfullyDeleted') });
           }, err => {
             if (err.status === 401) {
               this.fire('notify', {
