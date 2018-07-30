@@ -5,7 +5,7 @@ Vocabularies (list of values) management web components for building playful app
 
 # Documentation
 
-Please see the [documentation site](https://playingio.github.io).
+Please see the [documentation site](https://playingio.github.io) for more details.
 
 # Usage
 
